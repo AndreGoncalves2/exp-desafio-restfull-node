@@ -1,7 +1,6 @@
-const { use } = require("express/lib/router");
 const sqlConnection = require("../database/sqlite");
 const AppError = require("../utils/appError");
-const { hash, compare } = require("bcryptjs");
+const { hash } = require("bcryptjs");
 
 class UserController {
     async create(request, response) {
