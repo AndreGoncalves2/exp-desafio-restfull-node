@@ -6,11 +6,10 @@ class NotesControllers {
         const { title, description, rating } = request.body;
         const { user_id } = request.params;
     
-        const [userExist] = await knex("users").where("id", user_id)
-        console.log(userExist)
+        const [userExist] = await knex("users").where("id", user_id);
 
         if(!userExist) {
-            throw new AppError("Usuario não existe");
+            throw new AppError("Usuário não existe");
         };
 
         await knex("movie_notes").insert({
@@ -18,8 +17,8 @@ class NotesControllers {
             description,
             rating,
             user_id
-        })
+        });
         response.status(201).json();
     };
-}
+};
 module.exports = NotesControllers;
