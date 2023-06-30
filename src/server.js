@@ -6,7 +6,10 @@ const routes = require("./routes/index.js");
 const AppError = require("./utils/appError");
 
 const app = express();
+const cors = require("cors");
+
 app.use(express.json());
+app.use(cors());
 
 database();
 
