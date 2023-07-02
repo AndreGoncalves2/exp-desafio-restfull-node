@@ -4,9 +4,9 @@ const AppError = require("../utils/appError");
 class NotesControllers {
     async create(request, response) {
         const { title, description, rating } = request.body;
-        const { user_id } = request.params;
+        const { id } = request.user;
     
-        const [userExist] = await knex("users").where("id", user_id);
+        const [userExist] = await knex("users").where("id", id);
 
         if(!userExist) {
             throw new AppError("Usuário não existe");
@@ -16,9 +16,9 @@ class NotesControllers {
             title,
             description,
             rating,
-            user_id
+            user_id: id
         });
-        response.status(201).json();
+        return response.status(201).json();
     };
 };
 module.exports = NotesControllers;

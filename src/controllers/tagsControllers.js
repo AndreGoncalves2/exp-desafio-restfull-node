@@ -13,7 +13,7 @@ class TagsControllers {
             name
         });
 
-        response.status(201).json();
+        return response.status(201).json();
     };
 };
 
