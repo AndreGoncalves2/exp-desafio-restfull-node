@@ -8,5 +8,6 @@ const notesControllers = new NotesControllers();
 const notesRouter = Router();
 
 notesRouter.post("/", ensureAuthenticated, notesControllers.create);
+notesRouter.get("/", ensureAuthenticated, notesControllers.index);
 
 module.exports = notesRouter;
