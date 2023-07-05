@@ -36,9 +36,9 @@ class NotesControllers {
     async index(request, response) {
         const { id } = request.user;
         const notes = await knex("movie_notes").where({ user_id: id });
-        // const tags = await knex("movie_tags").where({ note_id: notes.id });
-        console.log(notes[1].id)
-        response.json({ notes});
+        const tags = await knex('movie_tags').where({ user_id: id });
+
+        response.json({ notes, tags });
     };
 };
 module.exports = NotesControllers;
