@@ -35,7 +35,8 @@ class NotesControllers {
 
     async index(request, response) {
         const { id } = request.user;
-        const notes = await knex.raw(`
+
+        let notes = await knex.raw(`
             SELECT mn.*, mt.tags
             FROM movie_notes mn
             JOIN (
@@ -44,8 +45,19 @@ class NotesControllers {
                 GROUP BY note_id
             ) mt ON mn.id = mt.note_id
             WHERE mn.user_id = 2;
-        `);    
+        `);
+
+        notes.forEach(note => {
+            note.tags = note.tags.split(',');
+        });
+
         response.json({ notes });
     };
+
+    async showNote(request, response) {
+        const {id} = request.params;
+        const note = await knex("movie_notes").where({ id });
+        response.json({ note });
+    }
 };
 module.exports = NotesControllers;

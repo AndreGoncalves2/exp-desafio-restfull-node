@@ -9,5 +9,7 @@ const notesRouter = Router();
 
 notesRouter.post("/", ensureAuthenticated, notesControllers.create);
 notesRouter.get("/", ensureAuthenticated, notesControllers.index);
+notesRouter.get("/:id", ensureAuthenticated, notesControllers.showNote);
+
 
 module.exports = notesRouter;
