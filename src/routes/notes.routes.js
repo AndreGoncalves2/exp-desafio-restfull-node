@@ -10,6 +10,8 @@ const notesRouter = Router();
 notesRouter.post("/", ensureAuthenticated, notesControllers.create);
 notesRouter.get("/", ensureAuthenticated, notesControllers.index);
 notesRouter.get("/:id", ensureAuthenticated, notesControllers.showNote);
+notesRouter.delete("/:id", ensureAuthenticated, notesControllers.delete);
+
 
 
 module.exports = notesRouter;

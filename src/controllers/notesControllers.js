@@ -32,8 +32,16 @@ class NotesControllers {
         return response.status(201).json();
     };
 
+    async delete(request, response) {
+        const { id } = request.params;
+        await knex("movie_notes").where({ id }).delete();
+
+        return response.json();
+    };
+
     async index(request, response) {
         const { id } = request.user;
+        const { title } = request.query;
 
         let notes = await knex.raw(`
             SELECT mn.*, mt.tags
@@ -43,18 +51,21 @@ class NotesControllers {
                 FROM movie_tags
                 GROUP BY note_id
             ) mt ON mn.id = mt.note_id
-            WHERE mn.user_id = ${id};
+            WHERE mn.user_id = ${id}
+            AND 
+            mn.title LIKE '%${title}%';
         `);
 
         notes.forEach(note => {
             note.tags = note.tags.split(',');
         });
 
-        response.json({ notes });
+        return response.json({ notes });
     };
 
     async showNote(request, response) {
-        const {id} = request.params;
+        const { id } = request.params;
+        
         let [note] = await knex.raw(`
             SELECT mn.*, mt.tags
             FROM movie_notes mn
@@ -63,11 +74,11 @@ class NotesControllers {
                 FROM movie_tags
                 GROUP BY note_id
             ) mt ON mn.id = mt.note_id
+            WHERE mn.id = ${id}
         `);
         
-        note.tags = note.tags.split(',')
-       console.log(note)
-        response.json({ note });
-    }
+        note.tags = note.tags.split(',');
+        return response.json({ note });
+    };
 };
 module.exports = NotesControllers;
