@@ -1,4 +1,3 @@
-const { knex } = require("knex");
 const sqlConnection = require("../database/sqlite");
 const AppError = require("../utils/appError");
 const { hash, compare } = require("bcryptjs");
@@ -27,20 +26,26 @@ class UserController {
         const user_id = request.user.id;
 
         if (!email || !password) {
-            throw new AppError("Preencha o email e a senha antiga.");
+            throw new AppError("Preencha o email e a senha atual.");
         }
         const database = await sqlConnection();
     
         const user = await database.get("SELECT * FROM users WHERE id = (?)", user_id);
         
         const verifyPassword = await compare(password, user.password);
+        const verifyEmail = await database.get("SELECT * FROM users WHERE email = (?)", email);
+
+        if (verifyEmail.id != user.id) {
+            throw new AppError("Email já está em uso");
+        };
+
         if (!verifyPassword) {
-            throw new AppError("Senha antiga incorreta.");
+            throw new AppError("Senha atual incorreta.");
         };
         
         user.name = name ?? user.name;
         user.email = email ?? user.email;
-        user.password = await hash(newPassword,8) ?? user.password;
+        !newPassword ? user.password = user.password : user.password = await hash(newPassword,8);
 
         await database.run(`
         UPDATE users SET

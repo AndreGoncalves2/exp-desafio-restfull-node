@@ -26,7 +26,6 @@ class NotesControllers {
                 note_id
             };
         });
-        console.log(tagsInsert);
         
         await knex("movie_tags").insert(tagsInsert);
         
@@ -44,7 +43,7 @@ class NotesControllers {
                 FROM movie_tags
                 GROUP BY note_id
             ) mt ON mn.id = mt.note_id
-            WHERE mn.user_id = 2;
+            WHERE mn.user_id = ${id};
         `);
 
         notes.forEach(note => {
@@ -56,7 +55,18 @@ class NotesControllers {
 
     async showNote(request, response) {
         const {id} = request.params;
-        const note = await knex("movie_notes").where({ id });
+        let [note] = await knex.raw(`
+            SELECT mn.*, mt.tags
+            FROM movie_notes mn
+            JOIN (
+                SELECT note_id, GROUP_CONCAT(name, ', ') AS tags
+                FROM movie_tags
+                GROUP BY note_id
+            ) mt ON mn.id = mt.note_id
+        `);
+        
+        note.tags = note.tags.split(',')
+       console.log(note)
         response.json({ note });
     }
 };
