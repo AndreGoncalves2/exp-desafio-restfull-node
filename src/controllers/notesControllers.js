@@ -18,16 +18,19 @@ class NotesControllers {
             rating,
             user_id: id
         });
+
+        if (tags.length > 0){
+            const tagsInsert = tags.map(tag => {
+                return {
+                    name: tag,
+                    user_id: id,
+                    note_id
+                };
+            });
+
+            await knex("movie_tags").insert(tagsInsert);
+        };
         
-        const tagsInsert = tags.map(tag => {
-            return {
-                name: tag,
-                user_id: id,
-                note_id
-            };
-        });
-        
-        await knex("movie_tags").insert(tagsInsert);
         
         return response.status(201).json();
     };
@@ -46,7 +49,7 @@ class NotesControllers {
         let notes = await knex.raw(`
             SELECT mn.*, mt.tags
             FROM movie_notes mn
-            JOIN (
+            LEFT JOIN (
                 SELECT note_id, GROUP_CONCAT(name, ', ') AS tags
                 FROM movie_tags
                 GROUP BY note_id
@@ -55,9 +58,13 @@ class NotesControllers {
             AND 
             mn.title LIKE '%${title}%';
         `);
-
+        
         notes.forEach(note => {
-            note.tags = note.tags.split(',');
+            if (note.tags == null) {
+                note.tags = [];
+            } else {
+                note.tags = note.tags.split(',');
+            };
         });
 
         return response.json({ notes });
@@ -69,15 +76,20 @@ class NotesControllers {
         let [note] = await knex.raw(`
             SELECT mn.*, mt.tags
             FROM movie_notes mn
-            JOIN (
+            LEFT JOIN (
                 SELECT note_id, GROUP_CONCAT(name, ', ') AS tags
                 FROM movie_tags
                 GROUP BY note_id
             ) mt ON mn.id = mt.note_id
             WHERE mn.id = ${id}
         `);
-        
-        note.tags = note.tags.split(',');
+
+        if (note.tags == null) {
+            note.tags = []
+        } else {
+            note.tags = note.tags.split(',');
+        };
+
         return response.json({ note });
     };
 };
