@@ -26,7 +26,7 @@ class UsersAvatarControllers {
         user.avatar = filename;
 
         await knex("users").update(user).where({ id: user.id });
-        console.log("esse ta indo")
+
         return response.json(user);
     };
 };
