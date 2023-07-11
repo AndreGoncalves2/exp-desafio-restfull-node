@@ -35,7 +35,7 @@ class UserController {
         const verifyPassword = await compare(password, user.password);
         const verifyEmail = await database.get("SELECT * FROM users WHERE email = (?)", email);
         
-        if (verifyEmail.id != user.id) {
+        if (verifyEmail && (verifyEmail.id != user.id)) {
             throw new AppError("Email já está em uso");
         };
         
