@@ -6,10 +6,14 @@ class NotesControllers {
         const { title, description, rating, tags } = request.body;
         const { id } = request.user;
     
-        const [userExist] = await knex("users").where("id", id);
+        const [userExist] = await knex("users").where({ id });
 
         if(!userExist) {
             throw new AppError("Usuário não existe");
+        };
+
+        if (rating >= 5 || rating < 0 || isNaN(rating)) {
+            throw new AppError("A nota precisa ser um numero de 0 a 5");
         };
 
         const [note_id] = await knex("movie_notes").insert({
@@ -18,7 +22,7 @@ class NotesControllers {
             rating,
             user_id: id
         });
-
+        
         if (tags.length > 0){
             const tagsInsert = tags.map(tag => {
                 return {
