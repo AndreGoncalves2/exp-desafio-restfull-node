@@ -13,7 +13,7 @@ class NotesControllers {
         };
 
         if (rating > 5 || rating < 0 || isNaN(rating)) {
-            throw new AppError("A nota precisa ser um numero de 0 a 5");
+            throw new AppError("A nota precisa ser um número de 0 a 5");
         };
 
         const [note_id] = await knex("movie_notes").insert({

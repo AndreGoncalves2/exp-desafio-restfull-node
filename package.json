@@ -21,7 +21,8 @@
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon ./src/server.js",
-    "migrate": "knex migrate:latest"
+    "migrate": "knex migrate:latest",
+    "test": "jest"
   },
   "name": "exp-desafio-node-01",
   "version": "1.0.0",
