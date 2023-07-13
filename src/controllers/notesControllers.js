@@ -12,7 +12,7 @@ class NotesControllers {
             throw new AppError("Usuário não existe");
         };
 
-        if (rating >= 5 || rating < 0 || isNaN(rating)) {
+        if (rating > 5 || rating < 0 || isNaN(rating)) {
             throw new AppError("A nota precisa ser um numero de 0 a 5");
         };
 
